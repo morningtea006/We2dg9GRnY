@@ -177,6 +177,11 @@ def get_run_cmd(config: dict, gpu_nums: int):
 
     for key, value in config.items():
         template = template.replace("{" + key + "}", str(value))
+    
+    if config.get("use_attn_implementation", ""):
+        use_attn_implementation = config["use_attn_implementation"]
+        template = template + f""" --use_attn_implementation {use_attn_implementation}"""
+        
     return template
 
 
@@ -200,7 +205,8 @@ def get_training_json(train_info: dict) -> dict:
         "request_path": train_info["request_path"],
         "distributed": config.get("distributed", "ddp"),
         "gradient_checkpointing": get_gradient_checkpointing(model_name),
-        "gradient_accumulation_steps": 1
+        "gradient_accumulation_steps": 1,
+        "use_attn_implementation": "kernels-community/vllm-flash-attn3" if train_info.get("is_openai", False) else ""
     }
     
     if not config.get("gradient_checkpointing", True):
