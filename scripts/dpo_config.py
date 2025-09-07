@@ -105,7 +105,7 @@ def get_config(param_nums: int) -> dict:
     elif param_nums < 80_000_000_000:
         result = DPO_CONFIG["40_80_b"]
     else:
-        print(f"Model size {param_nums} is not supported")
+        print(f"Model size {param_nums} is not supported", flush=True)
         result = {
             "lr": 4e-5,
             "distributed": "ds",
@@ -220,11 +220,12 @@ def get_training_json(train_info: dict) -> dict:
     # get lr from lrs_lookup.py
     lr = get_dpo_lr(model_name)
     if lr is not None:
-        print(f"Using lr from lk: {lr}")
+        print(f"Using lr from lk: {lr}", flush=True)
         run_config["learning_rate"] = lr
     else:
-        print(f"Using lr from config: {run_config['learning_rate']}")
-        
+        print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
+    
+    run_config["learning_rate"] *= train_info["reg_ratio"]
     run_cmd = get_run_cmd(run_config, run_config["gpu_nums"])
     train_request = deepcopy(train_info)
     train_request["save_before_remaining_time"] = 3

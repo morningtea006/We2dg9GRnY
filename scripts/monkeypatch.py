@@ -215,27 +215,27 @@ def pack_with_min_item_num(
     lengths: List[int], max_length: int, min_item_num: int = -1
 ) -> List[List[int]]:
     if min_item_num == -1:
-        print("Pack as much as we can as min_item_num is not set")
+        print("Pack as much as we can as min_item_num is not set", flush=True)
         return pack_data_points_by_length(lengths, max_length, -1)
     
     greedy_packed_groups = pack_data_points_by_length(lengths, max_length, -1)
     if len(greedy_packed_groups) >= min_item_num: # pack as much as we can 
-        print(f"max as much as we can still > min_item_num={min_item_num}, size={len(greedy_packed_groups)}")
+        print(f"max as much as we can still > min_item_num={min_item_num}, size={len(greedy_packed_groups)}", flush=True)
         return greedy_packed_groups
     
     # choose the biggest max_size so that number of groups > min_item_num
     no_packed_groups = [[index] for index in range(len(lengths))] # no packing 
     if len(no_packed_groups) <= min_item_num: # number of items is too small to merge
-        print(f"number of original items ({len(lengths)}) is already smaller than: {min_item_num}")
+        print(f"number of original items ({len(lengths)}) is already smaller than: {min_item_num}", flush=True)
         return no_packed_groups
     
     # so if max_size = 1 --> > min_item_num; merge all < min_item_num, so we need to choose the threshold between 1 and 10
     for i in range(2, 51):
         groups = pack_data_points_by_length(lengths, max_length, max_size=i)
-        print(f"number of items if max_size={i} is: {len(groups)}")
+        print(f"number of items if max_size={i} is: {len(groups)}", flush=True)
         if len(groups) < min_item_num: # using i-1 --> so many items, i --> so small 
             result = merge_intervals(lengths, max_length, max_size=i, min_item_num=min_item_num)
-            print(f"THE BEST MAX GROUP SIZE IN PACKING IS: {i}, size={len(groups)}; number of final groups: {len(result)}")
+            print(f"THE BEST MAX GROUP SIZE IN PACKING IS: {i}, size={len(groups)}; number of final groups: {len(result)}", flush=True)
             return result
     return groups
 

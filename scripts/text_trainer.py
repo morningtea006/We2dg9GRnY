@@ -42,7 +42,7 @@ from transformers import AutoConfig
 
 
 def run_cmd_with_log(cmd: str, log_file_path: str, env_vars: dict = None):
-    print(f"Running command: {cmd}")
+    print(f"Running command: {cmd}", flush=True)
     with open(log_file_path, "w") as log_file:
         # Prepare environment variables
         process_env = os.environ.copy()
@@ -62,7 +62,7 @@ def run_cmd_with_log(cmd: str, log_file_path: str, env_vars: dict = None):
 
         # Stream output to both console and log file
         for line in process.stdout:
-            print(line, end="")
+            print(line, end="", flush=True)
             log_file.write(line)
             log_file.flush()
 
@@ -198,7 +198,10 @@ def main():
     parser.add_argument(
         "--min-steps", type=int, help="Min steps to use for training", default=100
     )
-
+    
+    parser.add_argument(
+        "--reg-ratio", type=float, help="Reg ratio to use for training", default=0.9
+    )
     args = parser.parse_args()
     original_model_name = args.model
     original_task_type = args.task_type
@@ -262,6 +265,7 @@ def main():
         "wandb_log_dir": train_cst.WANDB_LOGS_DIR,
         "min_steps": args.min_steps,
         "is_openai": is_openai,
+        "reg_ratio": args.reg_ratio,
     }
 
     if args.task_type == TaskType.INSTRUCTTEXTTASK.value:

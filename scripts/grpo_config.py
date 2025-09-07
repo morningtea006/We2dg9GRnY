@@ -316,10 +316,12 @@ def get_training_json(train_info: dict) -> dict:
     # get lr from lrs_lookup.py
     lr = get_grpo_lr(model_name)
     if lr is not None:
-        print(f"Using lr from lk: {lr}")
+        print(f"Using lr from lk: {lr}", flush=True)
         run_config["learning_rate"] = lr
     else:
-        print(f"Using lr from config: {run_config['learning_rate']}")
+        print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
+    
+    run_config["learning_rate"] *= train_info["reg_ratio"]
         
     run_cmd = get_run_cmd(run_config, run_config["gpu_nums"])
     
