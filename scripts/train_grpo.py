@@ -450,7 +450,7 @@ def main():
     max_steps = train_request.get("max_steps", -1)
     log_info(f"max_steps: {max_steps}")
 
-    has_extra_column = "extra_column" in train_request["dataset_type"] and STANDARD_GRPO_EXTRA_COLUMN in train_ds.column_names
+    has_extra_column = STANDARD_GRPO_EXTRA_COLUMN in train_ds.column_names
 
     sample_data = dev_ds.to_list()[:10] if len(dev_ds) > 10 else None
     wrapped_reward_funcs = get_reward_funcs(train_request["dataset_type"], sample_data, has_extra_column)

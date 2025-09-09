@@ -313,13 +313,14 @@ def get_training_json(train_info: dict) -> dict:
     if model_name in ["unsloth/codegemma-7b", "unsloth/gemma-7b-it"]:
         run_config["learning_rate"] = 8e-6
     
-    # get lr from lrs_lookup.py
-    lr = get_grpo_lr(model_name)
-    if lr is not None:
-        print(f"Using lr from lk: {lr}", flush=True)
-        run_config["learning_rate"] = lr
-    else:
-        print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
+    if train_info["find_lk_lr"]:
+        # get lr from lrs_lookup.py
+        lr = get_grpo_lr(model_name)
+        if lr is not None:
+            print(f"Using lr from lk: {lr}", flush=True)
+            run_config["learning_rate"] = lr
+        else:
+            print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
     
     run_config["learning_rate"] *= train_info["reg_ratio"]
         

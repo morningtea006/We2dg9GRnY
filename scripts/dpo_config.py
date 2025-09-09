@@ -216,14 +216,14 @@ def get_training_json(train_info: dict) -> dict:
     if total_batch_size < 64:
         run_config["gradient_accumulation_steps"] = min(4, int(64 / total_batch_size))
     
-    
-    # get lr from lrs_lookup.py
-    lr = get_dpo_lr(model_name)
-    if lr is not None:
-        print(f"Using lr from lk: {lr}", flush=True)
-        run_config["learning_rate"] = lr
-    else:
-        print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
+    if train_info["find_lk_lr"]:
+        # get lr from lrs_lookup.py
+        lr = get_dpo_lr(model_name)
+        if lr is not None:
+            print(f"Using lr from lk: {lr}", flush=True)
+            run_config["learning_rate"] = lr
+        else:
+            print(f"Using lr from config: {run_config['learning_rate']}", flush=True)
     
     run_config["learning_rate"] *= train_info["reg_ratio"]
     run_cmd = get_run_cmd(run_config, run_config["gpu_nums"])
